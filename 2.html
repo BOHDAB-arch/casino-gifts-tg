@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino Gifts - Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1b2e, #2d3047);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .tg-header {
+            background: rgba(30, 31, 47, 0.95);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tg-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .tg-close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        
+        .tg-close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 16px;
+        }
+        
+        .user-balance {
+            background: linear-gradient(135deg, #5d3af2, #8a63ff);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(93, 58, 242, 0.3);
+        }
+        
+        .balance-info h3 {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+        
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tg-coin {
+            color: #ffd700;
+            font-size: 24px;
+        }
+        
+        .add-funds-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .add-funds-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 24px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #8a63ff;
+        }
+        
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .case-item {
+            background: rgba(40, 42, 62, 0.8);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(138, 99, 255, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .case-item:hover {
+            transform: translateY(-5px);
+            border-color: #8a63ff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .case-image {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        
+        .case-info {
+            padding: 12px;
+            background: rgba(30, 31, 47, 0.9);
+        }
+        
+        .case-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .case-price {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .price-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .open-btn {
+            background: linear-gradient(135deg, #ff7b00, #ffaa00);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .open-btn:hover {
+            background: linear-gradient(135deg, #ff8c1a, #ffb733);
+        }
+        
+        .inventory-section {
+            background: rgba(40, 42, 62, 0.8);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .inventory-item {
+            background: rgba(30, 31, 47, 0.9);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .item-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #ffd700;
+        }
+        
+        .item-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .item-value {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2d3047, #1a1b2e);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 2px solid #8a63ff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        
+        .case-opening {
+            padding: 20px 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .prize-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #ffd700;
+        }
+        
+        .prize-icon {
+            font-size: 48px;
+            color: #ffd700;
+            margin-bottom: 16px;
+        }
+        
+        .prize-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .prize-value {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .open-another-btn {
+            background: linear-gradient(135deg, #8a63ff, #5d3af2);
+            border: none;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+        }
+        
+        .tg-footer {
+            background: rgba(30, 31, 47, 0.95);
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-around;
+            position: sticky;
+            bottom: 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .footer-btn.active {
+            color: #8a63ff;
+            background: rgba(138, 99, 255, 0.1);
+        }
+        
+        .footer-btn i {
+            font-size: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #8a63ff;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .case-rarity-common {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .case-rarity-rare {
+            border-color: rgba(0, 200, 255, 0.5);
+        }
+        
+        .case-rarity-epic {
+            border-color: rgba(180, 70, 255, 0.6);
+        }
+        
+        .case-rarity-legendary {
+            border-color: rgba(255, 215, 0, 0.7);
+        }
+        
+        @media (max-width: 480px) {
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .inventory-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Telegram Web App Header -->
+    <div class="tg-header">
+        <div class="tg-title">🎁 Casino Gifts</div>
+        <button class="tg-close-btn" id="closeApp">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="container">
+        <!-- User Balance -->
+        <div class="user-balance">
+            <div class="balance-info">
+                <h3>Ваш баланс</h3>
+                <div class="balance-amount">
+                    <i class="fas fa-coins tg-coin"></i>
+                    <span id="userBalance">1,250</span>
+                </div>
+            </div>
+            <button class="add-funds-btn" id="addFundsBtn">
+                <i class="fas fa-plus"></i> Поповнити
+            </button>
+        </div>
+        
+        <!-- Available Cases -->
+        <div class="section-title">
+            <i class="fas fa-gift"></i> Доступні кейси
+        </div>
+        
+        <div class="cases-grid" id="casesContainer">
+            <!-- Cases will be loaded dynamically -->
+        </div>
+        
+        <!-- Inventory -->
+        <div class="inventory-section">
+            <div class="inventory-header">
+                <div class="section-title">
+                    <i class="fas fa-archive"></i> Ваші предмети
+                </div>
+                <div class="balance-amount">
+                    <span id="itemsCount">5</span> предметів
+                </div>
+            </div>
+            
+            <div class="inventory-grid" id="inventoryContainer">
+                <!-- Inventory items will be loaded dynamically -->
+            </div>
+        </div>
+        
+        <!-- Daily Bonus -->
+        <div class="section-title">
+            <i class="fas fa-calendar-star"></i> Щоденний бонус
+        </div>
+        
+        <div class="cases-grid">
+            <div class="case-item">
+                <div class="case-image" style="background: linear-gradient(135deg, #ff7b00, #ffaa00);">
+                    <i class="fas fa-gift" style="font-size: 60px; color: white;"></i>
+                </div>
+                <div class="case-info">
+                    <div class="case-name">Щоденний подарунок</div>
+                    <div class="case-price">
+                        <div class="price-amount">БЕЗКОШТОВНО</div>
+                        <button class="open-btn" id="dailyBonusBtn">
+                            Отримати
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-item">
+                <div class="case-image" style="background: linear-gradient(135deg, #5d3af2, #8a63ff);">
+                    <i class="fas fa-star" style="font-size: 60px; color: white;"></i>
+                </div>
+                <div class="case-info">
+                    <div class="case-name">Бонус за запрошення</div>
+                    <div class="case-price">
+                        <div class="price-amount">+500 <i class="fas fa-coins"></i></div>
+                        <button class="open-btn" id="inviteBonusBtn">
+                            Запросити
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Case Opening Modal -->
+    <div class="modal-overlay" id="caseModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-title" id="modalTitle">Відкриття кейсу</div>
+            
+            <div class="case-opening" id="caseOpening">
+                <div class="loading-spinner"></div>
+                <p>Відкриваємо кейс...</p>
+            </div>
+            
+            <div id="prizeResult" style="display: none;">
+                <div class="prize-item">
+                    <div class="prize-icon" id="prizeIcon">🎁</div>
+                    <div class="prize-name" id="prizeName">Назва предмета</div>
+                    <div class="prize-value" id="prizeValue">Цінність: 100 монет</div>
+                </div>
+                
+                <button class="open-another-btn" id="openAnotherBtn">
+                    <i class="fas fa-redo"></i> Відкрити ще один
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer Navigation -->
+    <div class="tg-footer">
+        <button class="footer-btn active" id="homeBtn">
+            <i class="fas fa-home"></i> Головна
+        </button>
+        <button class="footer-btn" id="casesBtn">
+            <i class="fas fa-gift"></i> Кейси
+        </button>
+        <button class="footer-btn" id="inventoryBtn">
+            <i class="fas fa-archive"></i> Інвентар
+        </button>
+        <button class="footer-btn" id="profileBtn">
+            <i class="fas fa-user"></i> Профіль
+        </button>
+    </div>
+    
+    <script>
+        // Initialize Telegram Web App
+        const tg = window.Telegram.WebApp;
+        
+        // Expand the app to full height
+        tg.expand();
+        
+        // Set app theme based on Telegram theme
+        document.body.style.backgroundColor = tg.themeParams.bg_color || '#1a1b2e';
+        
+        // Mock user data
+        let userData = {
+            balance: 1250,
+            items: [],
+            dailyBonusClaimed: false,
+            username: 'Telegram User',
+            userId: 123456789
+        };
+        
+        // Mock cases data
+        const cases = [
+            { id: 1, name: 'Стартовий кейс', price: 100, rarity: 'common', icon: '🎁', color: '#4CAF50' },
+            { id: 2, name: 'Кейс удачі', price: 250, rarity: 'common', icon: '🍀', color: '#2196F3' },
+            { id: 3, name: 'Епічний кейс', price: 500, rarity: 'epic', icon: '⚡', color: '#9C27B0' },
+            { id: 4, name: 'Легендарний кейс', price: 1000, rarity: 'legendary', icon: '👑', color: '#FF9800' },
+            { id: 5, name: 'Кейс з сюрпризом', price: 750, rarity: 'rare', icon: '🎯', color: '#00BCD4' },
+            { id: 6, name: 'Золотий кейс', price: 1500, rarity: 'legendary', icon: '💰', color: '#FFD700' }
+        ];
+        
+        // Mock inventory items
+        const inventoryItems = [
+            { id: 1, name: 'Срібна монета', value: 50, icon: '🪙', rarity: 'common' },
+            { id: 2, name: 'Золотий ключ', value: 200, icon: '🔑', rarity: 'rare' },
+            { id: 3, name: 'Драконье яйце', value: 500, icon: '🐉', rarity: 'epic' },
+            { id: 4, name: 'Коронована жемчужина', value: 1000, icon: '💎', rarity: 'legendary' },
+            { id: 5, name: 'Скарбниця', value: 300, icon: '🏆', rarity: 'rare' }
+        ];
+        
+        // Mock prizes for cases
+        const prizes = [
+            { name: 'Срібна монета', value: 50, icon: '🪙', rarity: 'common' },
+            { name: 'Золотий ключ', value: 200, icon: '🔑', rarity: 'rare' },
+            { name: 'Драконье яйце', value: 500, icon: '🐉', rarity: 'epic' },
+            { name: 'Коронована жемчужина', value: 1000, icon: '💎', rarity: 'legendary' },
+            { name: 'Скарбниця', value: 300, icon: '🏆', rarity: 'rare' },
+            { name: 'Містичний артефакт', value: 750, icon: '🔮', rarity: 'epic' },
+            { name: 'Стародавня карта', value: 150, icon: '🗺️', rarity: 'common' },
+            { name: 'Волшебний посох', value: 600, icon: '🪄', rarity: 'epic' }
+        ];
+        
+        // DOM Elements
+        const userBalanceEl = document.getElementById('userBalance');
+        const casesContainer = document.getElementById('casesContainer');
+        const inventoryContainer = document.getElementById('inventoryContainer');
+        const itemsCountEl = document.getElementById('itemsCount');
+        const caseModal = document.getElementById('caseModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const caseOpeningEl = document.getElementById('caseOpening');
+        const prizeResultEl = document.getElementById('prizeResult');
+        const prizeIconEl = document.getElementById('prizeIcon');
+        const prizeNameEl = document.getElementById('prizeName');
+        const prizeValueEl = document.getElementById('prizeValue');
+        const openAnotherBtn = document.getElementById('openAnotherBtn');
+        const dailyBonusBtn = document.getElementById('dailyBonusBtn');
+        const inviteBonusBtn = document.getElementById('inviteBonusBtn');
+        const addFundsBtn = document.getElementById('addFundsBtn');
+        const closeAppBtn = document.getElementById('closeApp');
+        const footerBtns = document.querySelectorAll('.footer-btn');
+        
+        // Initialize the app
+        function initApp() {
+            updateBalanceDisplay();
+            loadCases();
+            loadInventory();
+            setupEventListeners();
+        }
+        
+        // Update balance display
+        function updateBalanceDisplay() {
+            userBalanceEl.textContent = userData.balance.toLocaleString();
+        }
+        
+        // Load cases into the grid
+        function loadCases() {
+            casesContainer.innerHTML = '';
+            
+            cases.forEach(caseItem => {
+                const caseElement = document.createElement('div');
+                caseElement.className = `case-item case-rarity-${caseItem.rarity}`;
+                
+                caseElement.innerHTML = `
+                    <div class="case-image" style="background: linear-gradient(135deg, ${caseItem.color}, ${adjustColor(caseItem.color, -20)});">
+                        <div style="font-size: 60px;">${caseItem.icon}</div>
+                    </div>
+                    <div class="case-info">
+                        <div class="case-name">${caseItem.name}</div>
+                        <div class="case-price">
+                            <div class="price-amount">
+                                <i class="fas fa-coins"></i> ${caseItem.price}
+                            </div>
+                            <button class="open-btn" data-case-id="${caseItem.id}">
+                                Відкрити
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                casesContainer.appendChild(caseElement);
+            });
+            
+            // Add event listeners to case buttons
+            document.querySelectorAll('.open-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const caseId = parseInt(this.getAttribute('data-case-id'));
+                    openCase(caseId);
+                });
+            });
+            
+            // Add event listeners to entire case cards
+            document.querySelectorAll('.case-item').forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    const caseId = index + 1;
+                    openCase(caseId);
+                });
+            });
+        }
+        
+        // Load inventory items
+        function loadInventory() {
+            inventoryContainer.innerHTML = '';
+            itemsCountEl.textContent = inventoryItems.length;
+            
+            inventoryItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'inventory-item';
+                
+                itemElement.innerHTML = `
+                    <div class="item-icon">${item.icon}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-value">${item.value} монет</div>
+                `;
+                
+                inventoryContainer.appendChild(itemElement);
+            });
+        }
+        
+        // Open a case
+        function openCase(caseId) {
+            const selectedCase = cases.find(c => c.id === caseId);
+            
+            if (!selectedCase) {
+                showNotification('Помилка: кейс не знайдено', 'error');
+                return;
+            }
+            
+            if (userData.balance < selectedCase.price) {
+                showNotification('Недостатньо коштів для відкриття кейсу', 'error');
+                return;
+            }
+            
+            // Deduct balance
+            userData.balance -= selectedCase.price;
+            updateBalanceDisplay();
+            
+            // Show modal
+            document.getElementById('modalTitle').textContent = `Відкриття: ${selectedCase.name}`;
+            caseModal.style.display = 'flex';
+            prizeResultEl.style.display = 'none';
+            caseOpeningEl.style.display = 'flex';
+            
+            // Simulate opening animation
+            setTimeout(() => {
+                // Select random prize
+                const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                
+                // Show prize
+                caseOpeningEl.style.display = 'none';
+                prizeIconEl.textContent = randomPrize.icon;
+                prizeNameEl.textContent = randomPrize.name;
+                prizeValueEl.textContent = `Цінність: ${randomPrize.value} монет`;
+                prizeResultEl.style.display = 'block';
+                
+                // Add prize to inventory
+                inventoryItems.push(randomPrize);
+                loadInventory();
+                
+                // Show notification
+                showNotification(`Ви отримали: ${randomPrize.name} (${randomPrize.value} монет)`, 'success');
+                
+                // In a real app, you would send this data to your backend
+                // tg.sendData(JSON.stringify({
+                //     action: 'open_case',
+                //     caseId: caseId,
+                //     prize: randomPrize
+                // }));
+                
+            }, 2000);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Close modal
+            closeModalBtn.addEventListener('click', () => {
+                caseModal.style.display = 'none';
+            });
+            
+            // Open another case
+            openAnotherBtn.addEventListener('click', () => {
+                caseModal.style.display = 'none';
+            });
+            
+            // Daily bonus
+            dailyBonusBtn.addEventListener('click', () => {
+                if (userData.dailyBonusClaimed) {
+                    showNotification('Ви вже отримали щоденний бонус сьогодні', 'info');
+                    return;
+                }
+                
+                userData.balance += 100;
+                userData.dailyBonusClaimed = true;
+                updateBalanceDisplay();
+                
+                dailyBonusBtn.innerHTML = '<i class="fas fa-check"></i> Отримано';
+                dailyBonusBtn.disabled = true;
+                
+                showNotification('Ви отримали щоденний бонус: 100 монет!', 'success');
+            });
+            
+            // Invite bonus
+            inviteBonusBtn.addEventListener('click', () => {
+                // In a real Telegram Mini App, you would use the share function
+                // tg.shareUrl('https://t.me/your_bot?start=ref123456', 'Запроси друзів');
+                
+                // For demo, just add bonus
+                userData.balance += 500;
+                updateBalanceDisplay();
+                
+                showNotification('Бонус за запрошення: 500 монет!', 'success');
+                
+                // In a real app, you would track invites
+                // tg.sendData(JSON.stringify({action: 'invite_bonus'}));
+            });
+            
+            // Add funds
+            addFundsBtn.addEventListener('click', () => {
+                // In a real Telegram Mini App, you would open payment interface
+                // tg.openInvoice('invoice_url');
+                
+                // For demo, just add funds
+                userData.balance += 1000;
+                updateBalanceDisplay();
+                
+                showNotification('Баланс поповнено на 1000 монет!', 'success');
+            });
+            
+            // Close app
+            closeAppBtn.addEventListener('click', () => {
+                tg.close();
+            });
+            
+            // Footer navigation
+            footerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    footerBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const btnId = this.id;
+                    
+                    // Simple navigation simulation
+                    if (btnId === 'homeBtn') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (btnId === 'casesBtn') {
+                        document.querySelector('.cases-section').scrollIntoView({ behavior: 'smooth' });
+                    } else if (btnId === 'inventoryBtn') {
+                        document.querySelector('.inventory-section').scrollIntoView({ behavior: 'smooth' });
+                    } else if (btnId === 'profileBtn') {
+                        showNotification('Розділ профілю в розробці', 'info');
+                    }
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === caseModal) {
+                    caseModal.style.display = 'none';
+                }
+            });
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#F44336' : '#2196F3'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+                font-weight: 500;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            // Add CSS for animations
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Utility function to adjust color brightness
+        function adjustColor(color, amount) {
+            let usePound = false;
+            
+            if (color[0] === "#") {
+                color = color.slice(1);
+                usePound = true;
+            }
+            
+            const num = parseInt(color, 16);
+            let r = (num >> 16) + amount;
+            let g = ((num >> 8) & 0x00FF) + amount;
+            let b = (num & 0x0000FF) + amount;
+            
+            r = r < 0 ? 0 : r > 255 ? 255 : r;
+            g = g < 0 ? 0 : g > 255 ? 255 : g;
+            b = b < 0 ? 0 : b > 255 ? 255 : b;
+            
+            return (usePound ? "#" : "") + (b | (g << 8) | (r << 16)).toString(16).padStart(6, '0');
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
